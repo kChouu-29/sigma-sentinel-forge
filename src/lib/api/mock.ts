@@ -173,19 +173,19 @@ tags:
   - attack.t1059.001
   - attack.initial-access
   - attack.t1190
-  - cve.${s.cveId.toLowerCase().replace(/-/g, ".")}
+  - ${s.cveId.toLowerCase().replace(/-/g, ".")}
 logsource:
   category: process_creation
   product: windows
 detection:
   selection_parent:
     ParentImage|endswith:
-      - '\\\\w3wp.exe'
-      - '\\\\httpd.exe'
+      - '\\w3wp.exe'
+      - '\\httpd.exe'
   selection_child:
     Image|endswith:
-      - '\\\\powershell.exe'
-      - '\\\\cmd.exe'
+      - '\\powershell.exe'
+      - '\\cmd.exe'
     CommandLine|contains:
       - ' -enc '
       - 'IEX('
