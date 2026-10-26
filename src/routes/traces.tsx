@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import {
   AlertOctagon, Bot, CheckSquare, ChevronDown, Flag, Footprints, Loader2, MessageSquare, Search, Send, User, Wrench, X,
 } from "lucide-react";
-import { api, type TraceEvent } from "@/lib/api";
+import { api, type Execution, type TraceEvent } from "@/lib/api";
 import { useEvents, useExecutions } from "@/lib/queries";
 import { formatDuration, formatTime, relTime } from "@/lib/format";
 import { PageHeader, ErrorState, EmptyState, JsonBlock, MockBadge, Mono } from "@/components/soc/primitives";
@@ -97,7 +97,7 @@ function Traces() {
   );
 }
 
-function ExecutionView({ executionId, selected, allExecs }: { executionId: string; selected?: ReturnType<typeof useExecutions>["data"] extends (infer T)[] | undefined ? T : never; allExecs: NonNullable<ReturnType<typeof useExecutions>["data"]> }) {
+function ExecutionView({ executionId, selected, allExecs }: { executionId: string; selected?: Execution; allExecs: Execution[] }) {
   const { data, isLoading, error, refetch } = useEvents(executionId);
   const [types, setTypes] = useState<Set<string>>(new Set());
   const [status, setStatus] = useState("");
