@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { CopyButton } from "./primitives";
 import { toast } from "sonner";
 
-function highlightLine(line: string) {
+function highlightLine(line: string): React.ReactNode {
   const comment = line.match(/^(\s*)(#.*)$/);
   if (comment) return <><span>{comment[1]}</span><span className="text-syn-comment">{comment[2]}</span></>;
   const m = line.match(/^(\s*)(- )?([\w.|@-]+)(:)(\s*)(.*)$/);
@@ -15,7 +15,7 @@ function highlightLine(line: string) {
   if (li) return <><span>{li[1]}</span><span className="text-muted-foreground">{li[2]}</span>{value(li[3])}</>;
   return <span className="text-syn-string">{line}</span>;
 }
-function value(v: string) {
+function value(v: string | undefined) {
   if (!v) return null;
   if (/^(true|false|null|\d+(\.\d+)?)$/.test(v)) return <span className="text-syn-number">{v}</span>;
   if (v === "|" || v === ">") return <span className="text-muted-foreground">{v}</span>;

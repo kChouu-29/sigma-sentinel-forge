@@ -13,8 +13,8 @@ export interface ApiConfig {
 const KEY = "soc-console.api-config";
 
 export const defaultConfig: ApiConfig = {
-  mode: (import.meta.env.VITE_API_MODE as ApiMode) === "live" ? "live" : "mock",
-  baseUrl: (import.meta.env.VITE_API_BASE_URL as string) ?? "",
+  mode: (import.meta.env['VITE_API_MODE'] as ApiMode) === "live" ? "live" : "mock",
+  baseUrl: (import.meta.env['VITE_API_BASE_URL'] as string) ?? "",
   timeoutMs: 15000,
   pollIntervalMs: 3000,
 };
