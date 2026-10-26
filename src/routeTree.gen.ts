@@ -10,33 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as PipelineRouteImport } from './routes/pipeline'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as TracesRouteImport } from './routes/traces'
+import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
+import { Route as RulesIndexRouteImport } from './routes/rules.index'
+import { Route as RulesRuleIdRouteImport } from './routes/rules.$ruleId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PipelineRoute = PipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TracesRoute = TracesRouteImport.update({
+  id: '/traces',
+  path: '/traces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JobsJobIdRoute = JobsJobIdRouteImport.update({
+  id: '/jobs/$jobId',
+  path: '/jobs/$jobId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesIndexRoute = RulesIndexRouteImport.update({
+  id: '/rules/',
+  path: '/rules/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRuleIdRoute = RulesRuleIdRouteImport.update({
+  id: '/rules/$ruleId',
+  path: '/rules/$ruleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/pipeline': typeof PipelineRoute
+  '/settings': typeof SettingsRoute
+  '/traces': typeof TracesRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
+  '/rules/$ruleId': typeof RulesRuleIdRoute
+  '/rules/': typeof RulesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/pipeline': typeof PipelineRoute
+  '/settings': typeof SettingsRoute
+  '/traces': typeof TracesRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
+  '/rules/$ruleId': typeof RulesRuleIdRoute
+  '/rules': typeof RulesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/history': typeof HistoryRoute
+  '/pipeline': typeof PipelineRoute
+  '/settings': typeof SettingsRoute
+  '/traces': typeof TracesRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
+  '/rules/$ruleId': typeof RulesRuleIdRoute
+  '/rules/': typeof RulesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/history'
+    | '/pipeline'
+    | '/settings'
+    | '/traces'
+    | '/jobs/$jobId'
+    | '/rules/$ruleId'
+    | '/rules/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/history'
+    | '/pipeline'
+    | '/settings'
+    | '/traces'
+    | '/jobs/$jobId'
+    | '/rules/$ruleId'
+    | '/rules'
+  id:
+    | '__root__'
+    | '/'
+    | '/history'
+    | '/pipeline'
+    | '/settings'
+    | '/traces'
+    | '/jobs/$jobId'
+    | '/rules/$ruleId'
+    | '/rules/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HistoryRoute: typeof HistoryRoute
+  PipelineRoute: typeof PipelineRoute
+  SettingsRoute: typeof SettingsRoute
+  TracesRoute: typeof TracesRoute
+  JobsJobIdRoute: typeof JobsJobIdRoute
+  RulesRuleIdRoute: typeof RulesRuleIdRoute
+  RulesIndexRoute: typeof RulesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +143,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pipeline': {
+      id: '/pipeline'
+      path: '/pipeline'
+      fullPath: '/pipeline'
+      preLoaderRoute: typeof PipelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/traces': {
+      id: '/traces'
+      path: '/traces'
+      fullPath: '/traces'
+      preLoaderRoute: typeof TracesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jobs/$jobId': {
+      id: '/jobs/$jobId'
+      path: '/jobs/$jobId'
+      fullPath: '/jobs/$jobId'
+      preLoaderRoute: typeof JobsJobIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules/': {
+      id: '/rules/'
+      path: '/rules'
+      fullPath: '/rules/'
+      preLoaderRoute: typeof RulesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules/$ruleId': {
+      id: '/rules/$ruleId'
+      path: '/rules/$ruleId'
+      fullPath: '/rules/$ruleId'
+      preLoaderRoute: typeof RulesRuleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HistoryRoute: HistoryRoute,
+  PipelineRoute: PipelineRoute,
+  SettingsRoute: SettingsRoute,
+  TracesRoute: TracesRoute,
+  JobsJobIdRoute: JobsJobIdRoute,
+  RulesRuleIdRoute: RulesRuleIdRoute,
+  RulesIndexRoute: RulesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
