@@ -8,3 +8,9 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Architecture rules
+- All backend access goes through `api()` in `src/lib/api` (one adapter: mock or live, never mixed); UI never calls fetch directly — keeps backend swap a single-module change.
+- Live endpoint paths live only in `src/lib/api/config.ts` and are placeholders until a backend spec exists — avoids scattered assumed URLs.
+- Job/pipeline status is rendered only from backend data; the UI never estimates progress or marks jobs complete.
+- Data hooks live in `src/lib/queries.ts` (React Query, client-side) because API config is stored in browser localStorage.
