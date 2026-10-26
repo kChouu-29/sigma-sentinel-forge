@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PipelineRouteImport } from './routes/pipeline'
+import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
+import { Route as RulesIndexRouteImport } from './routes/rules.index'
+import { Route as RulesRuleIdRouteImport } from './routes/rules.$ruleId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +25,64 @@ const PipelineRoute = PipelineRouteImport.update({
   path: '/pipeline',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsJobIdRoute = JobsJobIdRouteImport.update({
+  id: '/jobs/$jobId',
+  path: '/jobs/$jobId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesIndexRoute = RulesIndexRouteImport.update({
+  id: '/rules/',
+  path: '/rules/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRuleIdRoute = RulesRuleIdRouteImport.update({
+  id: '/rules/$ruleId',
+  path: '/rules/$ruleId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/pipeline': typeof PipelineRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
+  '/rules/$ruleId': typeof RulesRuleIdRoute
+  '/rules/': typeof RulesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/pipeline': typeof PipelineRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
+  '/rules/$ruleId': typeof RulesRuleIdRoute
+  '/rules': typeof RulesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/pipeline': typeof PipelineRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
+  '/rules/$ruleId': typeof RulesRuleIdRoute
+  '/rules/': typeof RulesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/pipeline'
+  fullPaths: '/' | '/pipeline' | '/jobs/$jobId' | '/rules/$ruleId' | '/rules/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/pipeline'
-  id: '__root__' | '/' | '/pipeline'
+  to: '/' | '/pipeline' | '/jobs/$jobId' | '/rules/$ruleId' | '/rules'
+  id:
+    | '__root__'
+    | '/'
+    | '/pipeline'
+    | '/jobs/$jobId'
+    | '/rules/$ruleId'
+    | '/rules/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PipelineRoute: typeof PipelineRoute
+  JobsJobIdRoute: typeof JobsJobIdRoute
+  RulesRuleIdRoute: typeof RulesRuleIdRoute
+  RulesIndexRoute: typeof RulesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +101,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PipelineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/$jobId': {
+      id: '/jobs/$jobId'
+      path: '/jobs/$jobId'
+      fullPath: '/jobs/$jobId'
+      preLoaderRoute: typeof JobsJobIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules/': {
+      id: '/rules/'
+      path: '/rules'
+      fullPath: '/rules/'
+      preLoaderRoute: typeof RulesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules/$ruleId': {
+      id: '/rules/$ruleId'
+      path: '/rules/$ruleId'
+      fullPath: '/rules/$ruleId'
+      preLoaderRoute: typeof RulesRuleIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PipelineRoute: PipelineRoute,
+  JobsJobIdRoute: JobsJobIdRoute,
+  RulesRuleIdRoute: RulesRuleIdRoute,
+  RulesIndexRoute: RulesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
