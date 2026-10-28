@@ -1,4 +1,20 @@
-import type { Job, SigmaRule } from "./api/types";
+import type { Job, RuleState, SigmaRule } from "./api/types";
+
+export const RULE_STATUS_STATES = ["generated", "validated", "reviewed"] as const;
+
+export function countRuleStates(rules: SigmaRule[]) {
+  const counts = { generated: 0, validated: 0, reviewed: 0 };
+  for (const rule of rules) {
+    if (rule.state === "generated" || rule.state === "validated" || rule.state === "reviewed") {
+      counts[rule.state] += 1;
+    }
+  }
+  return counts;
+}
+
+export function ruleStateLabel(state: RuleState): string {
+  return state === "deployed" ? "published" : state;
+}
 
 /** Presentation cap: every list shows at most this many records. */
 export const MAX_ROWS = 10;

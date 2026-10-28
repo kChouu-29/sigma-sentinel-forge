@@ -9,7 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { formatTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { groupRulesByCve } from "@/lib/soc-display";
+import { groupRulesByCve, ruleStateLabel } from "@/lib/soc-display";
+import type { RuleState } from "@/lib/api";
 
 export const Route = createFileRoute("/rules/")({
   head: () => ({
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/rules/")({
   component: RulesList,
 });
 
-const STATES = ["", "generated", "validated", "reviewed", "deployed"];
+const STATES: (RuleState | "")[] = ["", "generated", "validated", "reviewed", "deployed"];
 
 function RulesList() {
   const [q, setQ] = useState("");
@@ -40,7 +41,7 @@ function RulesList() {
   });
   return (
     <>
-      <PageHeader title={<span className="flex items-center gap-2">Sigma Rules <MockBadge /></span>} description="Generated rules are not production-ready until validated, reviewed and deployed." />
+      <PageHeader title={<span className="flex items-center gap-2">Sigma Rules <MockBadge /></span>} description="Generated rules are not production-ready until validated, reviewed and published." />
       <div className="panel">
         <div className="flex flex-wrap items-center gap-3 border-b p-3">
           <div className="relative w-full max-w-xs">
@@ -49,7 +50,7 @@ function RulesList() {
           </div>
           <div className="flex flex-wrap gap-1" role="group" aria-label="Filter by state">
             {STATES.map((s) => (
-              <Button key={s || "all"} size="sm" variant="ghost" onClick={() => setState(s)} aria-pressed={state === s} className={cn("h-7 px-2 text-xs capitalize", state === s ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground")}>{s || "all"}</Button>
+              <Button key={s || "all"} size="sm" variant="ghost" onClick={() => setState(s)} aria-pressed={state === s} className={cn("h-7 px-2 text-xs capitalize", state === s ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground")}>{s ? ruleStateLabel(s) : "all"}</Button>
             ))}
           </div>
         </div>
