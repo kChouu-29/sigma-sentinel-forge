@@ -34,4 +34,13 @@ describe("SOC display rules", () => {
     ]);
     expect(groupRulesByCve([])).toEqual([]);
   });
+
+  it("shows at most 10 CVE groups while keeping every rule inside each group", () => {
+    const rules = Array.from({ length: 12 }, (_, n) => rule(`rule-${n}`, `CVE-2026-${1000 + n}`));
+    rules.push(...[rule("rule-x1", "CVE-2026-1000"), rule("rule-x2", "CVE-2026-1000")]);
+    const result = groupRulesByCve(rules);
+    expect(result).toHaveLength(10);
+    expect(result[0].rules).toHaveLength(3);
+    expect(result.every((g) => g.rules.length > 0)).toBe(true);
+  });
 });
