@@ -1,4 +1,6 @@
 # Tasks
+- [ ] Reformat Overview with clearer hierarchy and a full-width CVE table.
+- [ ] Add Published rule counts and verify the Overview layout and navigation.
 - [x] Replace Overview Pipeline Status with Generated, Validated, Reviewed rule counts.
 - [x] Rename visible Deployed states to Published without changing backend records.
 - [x] Verify rule counts, state labels and navigation.

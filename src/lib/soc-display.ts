@@ -1,11 +1,11 @@
 import type { Job, RuleState, SigmaRule } from "./api/types";
 
-export const RULE_STATUS_STATES = ["generated", "validated", "reviewed"] as const;
+export const RULE_STATUS_STATES = ["generated", "validated", "reviewed", "deployed"] as const;
 
 export function countRuleStates(rules: SigmaRule[]) {
-  const counts = { generated: 0, validated: 0, reviewed: 0 };
+  const counts = { generated: 0, validated: 0, reviewed: 0, deployed: 0 };
   for (const rule of rules) {
-    if (rule.state === "generated" || rule.state === "validated" || rule.state === "reviewed") {
+    if (RULE_STATUS_STATES.includes(rule.state)) {
       counts[rule.state] += 1;
     }
   }

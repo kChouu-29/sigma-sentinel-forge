@@ -12,15 +12,15 @@ const rule = (id: string, cveId: string): SigmaRule => ({
 });
 
 describe("SOC display rules", () => {
-  it("counts Generated, Validated and Reviewed using each rule's reported state", () => {
+  it("counts Generated, Validated, Reviewed and Published using each rule's reported state", () => {
     const rules: SigmaRule[] = [
       rule("a", "CVE-2026-1000"), rule("b", "CVE-2026-1000"),
       { ...rule("c", "CVE-2026-1000"), state: "validated" },
       { ...rule("d", "CVE-2026-1000"), state: "reviewed" },
       { ...rule("e", "CVE-2026-1000"), state: "deployed" },
     ];
-    expect(countRuleStates(rules)).toEqual({ generated: 2, validated: 1, reviewed: 1 });
-    expect(countRuleStates([])).toEqual({ generated: 0, validated: 0, reviewed: 0 });
+    expect(countRuleStates(rules)).toEqual({ generated: 2, validated: 1, reviewed: 1, deployed: 1 });
+    expect(countRuleStates([])).toEqual({ generated: 0, validated: 0, reviewed: 0, deployed: 0 });
     expect(rules[4].state).toBe("deployed");
   });
   it("keeps at most 10 latest distinct CVEs and their newest workflow", () => {
