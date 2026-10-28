@@ -8,6 +8,7 @@ import { validateCve } from "@/lib/format";
 import { useJobs } from "@/lib/queries";
 import { PageHeader, ErrorState, EmptyState, MockBadge } from "@/components/soc/primitives";
 import { JobsTable } from "@/components/soc/JobsTable";
+import { MAX_ROWS } from "@/lib/soc-display";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { relTime } from "@/lib/format";
-import { latestCveWorkflows } from "@/lib/soc-display";
+import { MAX_ROWS, latestCveWorkflows } from "@/lib/soc-display";
 
 export const Route = createFileRoute("/")({
   head: () => ({
