@@ -27,7 +27,7 @@ function diffLines(a: string, b: string) {
 export function RulePanel({ rule }: { rule: SigmaRule }) {
   const versions = rule.versions;
   const [ver, setVer] = useState<number | null>(null);
-  const shown = ver != null && versions ? versions.find((v) => v.version === ver)! : null;
+  const shown = ver != null && versions ? versions.find((v) => v.version === ver) : null;
   const prev = shown && versions ? versions.find((v) => v.version === shown.version - 1) : undefined;
   const f = rule.fields;
   const v = rule.validation;
@@ -108,8 +108,7 @@ export function RulePanel({ rule }: { rule: SigmaRule }) {
         </section>
         <section className="panel space-y-1 p-3 text-xs">
           <h3 className="label-caps mb-1">Linked</h3>
-          <Link to="/jobs/$jobId" params={{ jobId: rule.jobId }} className="block text-primary hover:underline">Job <span className="font-mono">{rule.jobId}</span></Link>
-          {rule.executionId && <Link to="/traces" search={{ execution: rule.executionId }} className="block text-primary hover:underline">AI trace <span className="font-mono">{rule.executionId}</span></Link>}
+          <Link to="/jobs/$jobId" params={{ jobId: rule.jobId }} className="block break-all text-primary hover:underline">Workflow ID <span className="font-mono">{rule.jobId}</span></Link>
         </section>
       </aside>
     </div>

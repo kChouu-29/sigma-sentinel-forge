@@ -24,6 +24,8 @@ export const Route = createFileRoute("/history")({
   },
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Processing History — SigmaForge" },
       { name: "description", content: "Search past CVE processing jobs by status, date, outcome and execution." },
       { property: "og:title", content: "Processing History — SigmaForge" },
@@ -76,14 +78,14 @@ function HistoryPage() {
         {error ? <div className="p-3"><ErrorState error={error} onRetry={() => refetch()} /></div> : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead><tr className="border-b text-left">{["CVE ID", "Job ID", "Execution", "Status", "Rule", "Started", "Duration", ""].map((h) => <th key={h} className="label-caps whitespace-nowrap px-3 py-2">{h}</th>)}</tr></thead>
+              <thead><tr className="border-b text-left">{["CVE ID", "Workflow ID", "Execution", "Status", "Rule", "Started", "Duration", ""].map((h) => <th key={h} className="label-caps whitespace-nowrap px-3 py-2">{h}</th>)}</tr></thead>
               <tbody className={isFetching && !isLoading ? "opacity-60" : ""}>
                 {isLoading && Array.from({ length: 8 }).map((_, i) => <tr key={i}><td colSpan={8} className="px-3 py-2.5"><Skeleton className="h-5" /></td></tr>)}
                 {data?.items.map((j) => (
                   <tr key={j.id} className="border-b border-border/60 hover:bg-accent/40">
                     <td className="whitespace-nowrap px-3 py-2"><Mono copy>{j.cveId}</Mono></td>
                     <td className="whitespace-nowrap px-3 py-2"><Mono className="text-muted-foreground">{j.id}</Mono></td>
-                    <td className="whitespace-nowrap px-3 py-2">{j.executionIds[0] && <Link to="/traces" search={{ execution: j.executionIds[0] }} className="font-mono text-xs text-primary hover:underline">{j.executionIds[0]}</Link>}</td>
+                    <td className="whitespace-nowrap px-3 py-2">{j.executionIds[0] ? <Mono copy className="text-muted-foreground">{j.executionIds[0]}</Mono> : "—"}</td>
                     <td className="px-3 py-2"><StatusBadge status={j.status} /></td>
                     <td className="px-3 py-2">{j.ruleId ? <Link to="/rules/$ruleId" params={{ ruleId: j.ruleId }} className="text-xs text-primary hover:underline">View rule</Link> : <span className="text-xs text-muted-foreground">—</span>}</td>
                     <td className="whitespace-nowrap px-3 py-2 font-mono text-xs text-muted-foreground">{formatTime(j.startedAt)}</td>

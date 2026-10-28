@@ -9,10 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { relTime } from "@/lib/format";
+import { latestCveWorkflows } from "@/lib/soc-display";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Overview — SigmaForge" },
       { name: "description", content: "Operational overview of CVE processing jobs and Sigma rule generation." },
       { property: "og:title", content: "Overview — SigmaForge" },
@@ -25,7 +28,7 @@ export const Route = createFileRoute("/")({
 function Overview() {
   const { data, isLoading, error, refetch } = useOverview();
   const [q, setQ] = useState("");
-  const jobs = useMemo(() => data?.recentJobs.filter((j) => (j.cveId + j.id + (j.stage ?? "") + j.status).toLowerCase().includes(q.toLowerCase())), [data, q]);
+  const jobs = useMemo(() => data ? latestCveWorkflows(data.recentJobs).filter((j) => (j.cveId + j.id + (j.stage ?? "") + j.status).toLowerCase().includes(q.toLowerCase())) : undefined, [data, q]);
   const total = data ? data.stageSummary.reduce((a, b) => a + b.count, 0) : 0;
 
   return (
@@ -73,10 +76,10 @@ function Overview() {
           <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
             <section className="panel min-w-0" aria-label="Recent jobs">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b p-3">
-                <h2 className="text-sm font-semibold">Recent CVE jobs</h2>
+                <h2 className="text-sm font-semibold">Latest CVEs <span className="ml-1 font-mono text-xs text-muted-foreground">{data ? latestCveWorkflows(data.recentJobs).length : "…"}/10</span></h2>
                 <div className="relative w-full max-w-xs">
                   <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                  <Input aria-label="Search jobs" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by CVE, job, stage…" className="h-8 pl-8 text-xs" />
+                  <Input aria-label="Search jobs" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by CVE, workflow, stage…" className="h-8 pl-8 text-xs" />
                 </div>
               </div>
               <JobsTable jobs={jobs} loading={isLoading} />

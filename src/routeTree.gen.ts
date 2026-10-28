@@ -12,8 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HistoryRouteImport } from './routes/history'
 import { Route as PipelineRouteImport } from './routes/pipeline'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as TracesRouteImport } from './routes/traces'
 import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
 import { Route as RulesIndexRouteImport } from './routes/rules.index'
 import { Route as RulesRuleIdRouteImport } from './routes/rules.$ruleId'
@@ -31,16 +29,6 @@ const HistoryRoute = HistoryRouteImport.update({
 const PipelineRoute = PipelineRouteImport.update({
   id: '/pipeline',
   path: '/pipeline',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TracesRoute = TracesRouteImport.update({
-  id: '/traces',
-  path: '/traces',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsJobIdRoute = JobsJobIdRouteImport.update({
@@ -63,8 +51,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/history': typeof HistoryRoute
   '/pipeline': typeof PipelineRoute
-  '/settings': typeof SettingsRoute
-  '/traces': typeof TracesRoute
   '/jobs/$jobId': typeof JobsJobIdRoute
   '/rules/$ruleId': typeof RulesRuleIdRoute
   '/rules/': typeof RulesIndexRoute
@@ -73,8 +59,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/history': typeof HistoryRoute
   '/pipeline': typeof PipelineRoute
-  '/settings': typeof SettingsRoute
-  '/traces': typeof TracesRoute
   '/jobs/$jobId': typeof JobsJobIdRoute
   '/rules/$ruleId': typeof RulesRuleIdRoute
   '/rules': typeof RulesIndexRoute
@@ -84,8 +68,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/history': typeof HistoryRoute
   '/pipeline': typeof PipelineRoute
-  '/settings': typeof SettingsRoute
-  '/traces': typeof TracesRoute
   '/jobs/$jobId': typeof JobsJobIdRoute
   '/rules/$ruleId': typeof RulesRuleIdRoute
   '/rules/': typeof RulesIndexRoute
@@ -96,8 +78,6 @@ export interface FileRouteTypes {
     | '/'
     | '/history'
     | '/pipeline'
-    | '/settings'
-    | '/traces'
     | '/jobs/$jobId'
     | '/rules/$ruleId'
     | '/rules/'
@@ -106,8 +86,6 @@ export interface FileRouteTypes {
     | '/'
     | '/history'
     | '/pipeline'
-    | '/settings'
-    | '/traces'
     | '/jobs/$jobId'
     | '/rules/$ruleId'
     | '/rules'
@@ -116,8 +94,6 @@ export interface FileRouteTypes {
     | '/'
     | '/history'
     | '/pipeline'
-    | '/settings'
-    | '/traces'
     | '/jobs/$jobId'
     | '/rules/$ruleId'
     | '/rules/'
@@ -127,8 +103,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HistoryRoute: typeof HistoryRoute
   PipelineRoute: typeof PipelineRoute
-  SettingsRoute: typeof SettingsRoute
-  TracesRoute: typeof TracesRoute
   JobsJobIdRoute: typeof JobsJobIdRoute
   RulesRuleIdRoute: typeof RulesRuleIdRoute
   RulesIndexRoute: typeof RulesIndexRoute
@@ -155,20 +129,6 @@ declare module '@tanstack/react-router' {
       path: '/pipeline'
       fullPath: '/pipeline'
       preLoaderRoute: typeof PipelineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/traces': {
-      id: '/traces'
-      path: '/traces'
-      fullPath: '/traces'
-      preLoaderRoute: typeof TracesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs/$jobId': {
@@ -199,8 +159,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HistoryRoute: HistoryRoute,
   PipelineRoute: PipelineRoute,
-  SettingsRoute: SettingsRoute,
-  TracesRoute: TracesRoute,
   JobsJobIdRoute: JobsJobIdRoute,
   RulesRuleIdRoute: RulesRuleIdRoute,
   RulesIndexRoute: RulesIndexRoute,

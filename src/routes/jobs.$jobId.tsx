@@ -1,10 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, ExternalLink, FileCode2, Loader2, RefreshCw, RotateCcw, Square } from "lucide-react";
+import { ChevronDown, FileCode2, Loader2, RefreshCw, RotateCcw, Square } from "lucide-react";
 import { toast } from "sonner";
 import { api, isTerminal, type JobDetail, type LogEntry, type PipelineStep } from "@/lib/api";
-import { useEvents, useJob, useRule } from "@/lib/queries";
+import { useJob, useRule } from "@/lib/queries";
 import { durationBetween, formatDuration, formatTime } from "@/lib/format";
 import { PageHeader, ErrorState, EmptyState, JsonBlock, Mono, MockBadge, CopyButton } from "@/components/soc/primitives";
 import { StatusBadge, StatusIcon, statusStyle } from "@/components/soc/status";
@@ -18,17 +18,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 
-const TABS = ["pipeline", "logs", "traces", "rule", "metadata"] as const;
+const TABS = ["pipeline", "logs", "rule", "metadata"] as const;
 type Tab = (typeof TABS)[number];
 
 export const Route = createFileRoute("/jobs/$jobId")({
   validateSearch: (s: Record<string, unknown>): { tab?: Tab } => ({ tab: TABS.includes(s.tab as Tab) ? (s.tab as Tab) : undefined }),
   head: ({ params }) => ({
     meta: [
-      { title: `Job ${params.jobId} — SigmaForge` },
-      { name: "description", content: "Inspect pipeline steps, logs, AI traces and the generated Sigma rule for a CVE job." },
-      { property: "og:title", content: `Job ${params.jobId} — SigmaForge` },
-      { property: "og:description", content: "Job detail workbench." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { title: `Workflow ${params.jobId} — SigmaForge` },
+      { name: "description", content: "Inspect pipeline steps, logs and the generated Sigma rule for a CVE workflow." },
+      { property: "og:title", content: `Workflow ${params.jobId} — SigmaForge` },
+      { property: "og:description", content: "Workflow detail workbench." },
     ],
   }),
   component: JobWorkbench,
@@ -52,7 +54,7 @@ function JobWorkbench() {
     onError: (e: Error) => toast.error("Retry failed", { description: e.message }),
   });
 
-  if (error) return <><PageHeader title="Job" crumbs={[{ label: "CVE Pipeline", to: "/pipeline" }, { label: jobId }]} /><ErrorState error={error} onRetry={() => refetch()} /></>;
+  if (error) return <><PageHeader title="Workflow" crumbs={[{ label: "CVE Pipeline", to: "/pipeline" }, { label: jobId }]} /><ErrorState error={error} onRetry={() => refetch()} /></>;
   if (isLoading || !job) return <div className="space-y-4"><Skeleton className="h-16" /><Skeleton className="h-10 w-96" /><Skeleton className="h-96" /></div>;
 
   const dur = durationBetween(job.startedAt, job.endedAt);
@@ -63,7 +65,7 @@ function JobWorkbench() {
         title={<span className="flex flex-wrap items-center gap-3"><Mono copy className="text-xl font-semibold">{job.cveId}</Mono><StatusBadge status={job.status} /><MockBadge /></span>}
         description={
           <span className="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs">
-            <span className="flex items-center gap-1">job <Mono copy>{job.id}</Mono></span>
+            <span className="flex items-center gap-1">Workflow ID <Mono copy>{job.id}</Mono></span>
             <span>started {formatTime(job.startedAt)}</span>
             <span>duration {formatDuration(dur)}{!job.endedAt && " (live)"}</span>
             {!isTerminal(job.status) && <span className="flex items-center gap-1 text-warning"><Loader2 className="h-3 w-3 animate-spin" />polling</span>}
@@ -77,12 +79,12 @@ function JobWorkbench() {
               <AlertDialogTrigger asChild><Button variant="outline" size="sm" className="text-danger hover:text-danger"><Square className="h-3.5 w-3.5" />Cancel</Button></AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Cancel job {job.id}?</AlertDialogTitle>
+                  <AlertDialogTitle>Cancel workflow {job.id}?</AlertDialogTitle>
                   <AlertDialogDescription>The backend will stop processing {job.cveId}. Partial outputs may remain; no rule will be produced.</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Keep running</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => cancel.mutate()} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Cancel job</AlertDialogAction>
+                  <AlertDialogAction onClick={() => cancel.mutate()} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Cancel workflow</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -95,13 +97,11 @@ function JobWorkbench() {
         <TabsList className="mb-4">
           <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
           <TabsTrigger value="logs">Logs</TabsTrigger>
-          <TabsTrigger value="traces">AI Traces</TabsTrigger>
           <TabsTrigger value="rule" disabled={!job.ruleId}>Generated Rule</TabsTrigger>
           <TabsTrigger value="metadata">Metadata</TabsTrigger>
         </TabsList>
         <TabsContent value="pipeline"><PipelineView steps={job.steps} /></TabsContent>
         <TabsContent value="logs"><LogsView job={job} /></TabsContent>
-        <TabsContent value="traces"><TracesTab job={job} /></TabsContent>
         <TabsContent value="rule">{job.ruleId && <RuleTab ruleId={job.ruleId} />}</TabsContent>
         <TabsContent value="metadata"><div className="panel p-4"><JsonBlock value={{ ...job, steps: undefined, metadata: job.metadata }} maxH="max-h-[600px]" /></div></TabsContent>
       </Tabs>
@@ -183,31 +183,6 @@ function LogsView({ job }: { job: JobDetail }) {
         ))}
       </div>
       <LogLines logs={logs} />
-    </div>
-  );
-}
-
-function TracesTab({ job }: { job: JobDetail }) {
-  const ex = job.executionIds[0];
-  const { data, isLoading, error, refetch } = useEvents(ex);
-  if (!ex) return <div className="panel"><EmptyState title="No AI execution linked" /></div>;
-  if (error) return <ErrorState error={error} onRetry={() => refetch()} />;
-  return (
-    <div className="panel">
-      <div className="flex items-center justify-between border-b p-3">
-        <span className="text-sm">Execution <Mono copy>{ex}</Mono> · {data?.length ?? "…"} events</span>
-        <Link to="/traces" search={{ execution: ex }} className="inline-flex items-center gap-1 text-xs text-primary hover:underline">Open in Trace Explorer<ExternalLink className="h-3 w-3" /></Link>
-      </div>
-      <ul className="divide-y divide-border/60">
-        {isLoading && <li className="p-3"><Skeleton className="h-24" /></li>}
-        {data?.map((e) => (
-          <li key={e.id} className="flex items-start gap-3 px-3 py-2 text-xs">
-            <span className="w-20 shrink-0 font-mono text-muted-foreground">{e.ts.slice(11, 19)}</span>
-            <span className="w-28 shrink-0 font-mono text-primary">{e.type}</span>
-            <span className="min-w-0 truncate">{e.title}{e.toolName && <span className="text-muted-foreground"> · {e.toolName}</span>}</span>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
