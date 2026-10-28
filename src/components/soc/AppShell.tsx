@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Activity, BrainCircuit, FileCode2, History, LayoutDashboard, Menu, Settings, ShieldHalf, Workflow, X } from "lucide-react";
+import { Activity, FileCode2, History, LayoutDashboard, Menu, ShieldHalf, Workflow, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useApiConfig, useHealth } from "@/lib/queries";
 
@@ -8,9 +8,7 @@ const NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/pipeline", label: "CVE Pipeline", icon: Workflow },
   { to: "/rules", label: "Sigma Rules", icon: FileCode2 },
-  { to: "/traces", label: "AI Traces", icon: BrainCircuit },
   { to: "/history", label: "History", icon: History },
-  { to: "/settings", label: "Settings", icon: Settings },
 ] as const;
 
 function ConnectionStatus() {
@@ -19,7 +17,7 @@ function ConnectionStatus() {
   const state = isLoading ? "checking" : isError || !data?.ok ? "offline" : "online";
   const dot = state === "online" ? (mode === "mock" ? "bg-warning" : "bg-success") : state === "offline" ? "bg-danger" : "bg-muted-foreground";
   return (
-    <Link to="/settings" className="block rounded-md border bg-background/50 p-2.5 text-xs hover:border-primary/40">
+    <div className="block rounded-md border bg-background/50 p-2.5 text-xs">
       <div className="flex items-center gap-2">
         <span className={cn("h-2 w-2 rounded-full", dot)} aria-hidden />
         <span className="font-medium">{mode === "mock" ? "Mock adapter" : "Live backend"}</span>
@@ -27,7 +25,7 @@ function ConnectionStatus() {
       <p className="mt-1 text-muted-foreground">
         {state === "checking" ? "Checking connection…" : state === "offline" ? "Unreachable" : mode === "mock" ? "Synthetic data only" : `Connected · ${data?.latencyMs}ms`}
       </p>
-    </Link>
+    </div>
   );
 }
 

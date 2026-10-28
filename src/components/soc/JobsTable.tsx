@@ -12,7 +12,7 @@ export function JobsTable({ jobs, loading }: { jobs?: Job[]; loading?: boolean }
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b text-left">
-            {["CVE ID", "Job ID", "Stage", "Status", "Progress", "Started", "Duration", ""].map((h) => (
+            {["CVE ID", "Workflow ID", "Stage", "Status", "Progress", "Started", "Duration", ""].map((h) => (
               <th key={h} className="label-caps whitespace-nowrap px-3 py-2 font-medium">{h}</th>
             ))}
           </tr>
