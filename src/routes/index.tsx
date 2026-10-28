@@ -14,6 +14,8 @@ import { latestCveWorkflows } from "@/lib/soc-display";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Overview — SigmaForge" },
       { name: "description", content: "Operational overview of CVE processing jobs and Sigma rule generation." },
       { property: "og:title", content: "Overview — SigmaForge" },

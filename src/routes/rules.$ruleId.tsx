@@ -8,6 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const Route = createFileRoute("/rules/$ruleId")({
   head: ({ params }) => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: `Rule ${params.ruleId} — SigmaForge` },
       { name: "description", content: "Sigma rule YAML, metadata and validation results." },
       { property: "og:title", content: `Rule ${params.ruleId} — SigmaForge` },

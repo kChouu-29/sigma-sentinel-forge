@@ -24,6 +24,8 @@ export const Route = createFileRoute("/history")({
   },
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Processing History — SigmaForge" },
       { name: "description", content: "Search past CVE processing jobs by status, date, outcome and execution." },
       { property: "og:title", content: "Processing History — SigmaForge" },

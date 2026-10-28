@@ -14,6 +14,8 @@ import { groupRulesByCve } from "@/lib/soc-display";
 export const Route = createFileRoute("/rules/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Sigma Rules — SigmaForge" },
       { name: "description", content: "Browse AI-generated Sigma rules with validation and lifecycle state." },
       { property: "og:title", content: "Sigma Rules — SigmaForge" },

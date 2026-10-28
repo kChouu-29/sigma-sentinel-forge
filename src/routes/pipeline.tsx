@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 export const Route = createFileRoute("/pipeline")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "CVE Pipeline — SigmaForge" },
       { name: "description", content: "Submit a CVE identifier to generate a Sigma detection rule." },
       { property: "og:title", content: "CVE Pipeline — SigmaForge" },
@@ -35,7 +37,7 @@ function Pipeline() {
   const submit = useMutation({
     mutationFn: (cve: string) => api().submitCve(cve),
     onSuccess: ({ jobId }, cve) => {
-      toast.success(`Job created for ${cve}`, { description: jobId });
+      toast.success(`Workflow created for ${cve}`, { description: jobId });
       qc.invalidateQueries({ queryKey: ["jobs"] });
       navigate({ to: "/jobs/$jobId", params: { jobId } });
     },
