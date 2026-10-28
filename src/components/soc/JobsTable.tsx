@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import type { Job } from "@/lib/api";
 import { durationBetween, formatDuration, formatTime } from "@/lib/format";
 import { Mono } from "./primitives";
-import { ProgressBar, StatusBadge } from "./status";
+import { StatusBadge } from "./status";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function JobsTable({ jobs, loading }: { jobs?: Job[]; loading?: boolean }) {
