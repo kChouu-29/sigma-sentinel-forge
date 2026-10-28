@@ -27,7 +27,6 @@ export function JobsTable({ jobs, loading }: { jobs?: Job[]; loading?: boolean }
               <td className="whitespace-nowrap px-3 py-2"><Mono copy className="text-muted-foreground">{j.id}</Mono></td>
               <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">{j.stage ?? "—"}</td>
               <td className="px-3 py-2"><StatusBadge status={j.status} /></td>
-              <td className="px-3 py-2"><ProgressBar value={j.progress} status={j.status} /></td>
               <td className="whitespace-nowrap px-3 py-2 font-mono text-xs text-muted-foreground">{formatTime(j.startedAt)}</td>
               <td className="whitespace-nowrap px-3 py-2 font-mono text-xs tabular-nums">{formatDuration(durationBetween(j.startedAt, j.endedAt))}</td>
               <td className="px-3 py-2 text-right">
