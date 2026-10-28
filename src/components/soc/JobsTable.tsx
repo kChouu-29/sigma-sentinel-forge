@@ -19,7 +19,7 @@ export function JobsTable({ jobs, loading }: { jobs?: Job[]; loading?: boolean }
         </thead>
         <tbody>
           {loading && Array.from({ length: 6 }).map((_, i) => (
-            <tr key={i} className="border-b"><td colSpan={8} className="px-3 py-2.5"><Skeleton className="h-5 w-full" /></td></tr>
+            <tr key={i} className="border-b"><td colSpan={7} className="px-3 py-2.5"><Skeleton className="h-5 w-full" /></td></tr>
           ))}
           {jobs?.map((j) => (
             <tr key={j.id} className="border-b border-border/60 transition-colors hover:bg-accent/40">
