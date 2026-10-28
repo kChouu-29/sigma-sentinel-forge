@@ -266,7 +266,7 @@ export const mockAdapter: ApiAdapter = {
       totals: { processed: jobs.length, running: count("running") + count("queued"), rulesGenerated: rules.length, failed: count("failed") },
       stageSummary: (["queued", "running", "completed", "failed", "cancelled"] as const).map((st) => ({ label: st, status: st, count: count(st) })),
       recentJobs: jobs.slice(0, 12).map(strip),
-      recentRules: rules.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 6),
+      recentRules: rules.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 12),
     };
   },
   async submitCve(cveId) {

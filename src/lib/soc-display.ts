@@ -41,3 +41,10 @@ export function groupRulesByCve(rules: SigmaRule[], maxCves = MAX_ROWS): { cveId
   }
   return Array.from(groups, ([cveId, entries]) => ({ cveId, rules: entries })).slice(0, maxCves);
 }
+
+/** Newest-first rule list capped at MAX_ROWS rules. */
+export function latestRules(rules: SigmaRule[], max = MAX_ROWS): SigmaRule[] {
+  return [...rules]
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice(0, max);
+}

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { relTime } from "@/lib/format";
-import { MAX_ROWS, latestCveWorkflows, countRuleStates, ruleStateLabel } from "@/lib/soc-display";
+import { MAX_ROWS, latestCveWorkflows, latestRules, countRuleStates, ruleStateLabel } from "@/lib/soc-display";
 import type { RuleState } from "@/lib/api";
 
 const RULE_METRICS: { state: RuleState; Icon: typeof FileCode2; tone: string; border: string; background: string }[] = [
@@ -38,6 +38,7 @@ function Overview() {
   const rules = useRules();
   const [q, setQ] = useState("");
   const jobs = useMemo(() => data ? latestCveWorkflows(data.recentJobs).filter((j) => (j.cveId + j.id + (j.stage ?? "") + j.status).toLowerCase().includes(q.toLowerCase())) : undefined, [data, q]);
+  const activity = useMemo(() => data ? latestRules(data.recentRules) : undefined, [data]);
   const ruleCounts = useMemo(() => countRuleStates(rules.data ?? []), [rules.data]);
 
   return (
@@ -83,11 +84,11 @@ function Overview() {
             )}
           </section>
 
-          <div className="space-y-7">
-            <section className="min-w-0" aria-label="Recent jobs">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3"><h2 className="text-sm font-semibold">Latest CVEs</h2><span className="font-mono text-xs text-muted-foreground">{data ? latestCveWorkflows(data.recentJobs).length : "…"}/10</span></div>
-                <div className="relative w-full max-w-xs">
+          <div className="grid items-start gap-6 xl:grid-cols-2">
+            <section className="min-w-0 space-y-3" aria-label="Recent jobs">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3"><h2 className="text-sm font-semibold">Latest CVEs</h2><span className="font-mono text-xs text-muted-foreground">{data ? latestCveWorkflows(data.recentJobs).length : "…"}/{MAX_ROWS}</span></div>
+                <div className="relative w-full max-w-[220px]">
                   <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
                   <Input aria-label="Search jobs" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter by CVE, workflow, stage…" className="h-8 pl-8 text-xs" />
                 </div>
@@ -96,26 +97,29 @@ function Overview() {
               {jobs && jobs.length === 0 && <EmptyState title="No matching jobs" description="Try a different search term." />}
             </section>
 
-            <section aria-label="Recent rule activity">
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold">Rule activity</h2>
-                <Link to="/rules" className="text-xs text-primary hover:underline">All rules</Link>
+            <section className="min-w-0 space-y-3" aria-label="Recent rule activity">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-3"><h2 className="text-sm font-semibold">Rule activity</h2><span className="font-mono text-xs text-muted-foreground">{activity ? activity.length : "…"}/{MAX_ROWS}</span></div>
+                <Link to="/rules" className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary">All rules<ArrowUpRight className="h-3.5 w-3.5" /></Link>
               </div>
-              <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                {isLoading && Array.from({ length: 5 }).map((_, i) => <li key={i} className="p-3"><Skeleton className="h-9" /></li>)}
-                {data?.recentRules.slice(0, MAX_ROWS).map((r) => (
-                  <li key={r.id} className="min-w-0">
-                    <Link to="/rules/$ruleId" params={{ ruleId: r.id }} className="panel block h-full p-3 transition-colors hover:border-primary/40 hover:bg-accent/40">
-                      <div className="flex items-center justify-between gap-2">
-                        <Mono className="font-medium">{r.cveId}</Mono>
-                        <RuleStateBadge state={r.state} />
-                      </div>
-                      <p className="mt-1 truncate text-xs text-muted-foreground">{r.fields.title}</p>
-                      <p className="mt-0.5 font-mono text-[10px] text-muted-foreground">{relTime(r.createdAt)}</p>
+              <ul className="panel max-h-[540px] divide-y overflow-y-auto">
+                {isLoading && Array.from({ length: 6 }).map((_, i) => <li key={i} className="px-3 py-2.5"><Skeleton className="h-9" /></li>)}
+                {activity?.map((r) => (
+                  <li key={r.id}>
+                    <Link to="/rules/$ruleId" params={{ ruleId: r.id }} className="flex items-start gap-3 px-3 py-2.5 transition-colors hover:bg-accent/40">
+                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded bg-primary/10 text-primary"><FileCode2 className="h-3 w-3" /></span>
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-center justify-between gap-2">
+                          <Mono className="font-medium">{r.cveId}</Mono>
+                          <RuleStateBadge state={r.state} />
+                        </span>
+                        <span className="mt-0.5 block truncate text-xs text-muted-foreground">{r.fields.title}</span>
+                        <span className="mt-0.5 block font-mono text-[10px] text-muted-foreground">{relTime(r.createdAt)}</span>
+                      </span>
                     </Link>
                   </li>
                 ))}
-                {data && data.recentRules.length === 0 && <EmptyState title="No rules yet" />}
+                {activity && activity.length === 0 && <EmptyState title="No rules yet" />}
               </ul>
             </section>
           </div>
