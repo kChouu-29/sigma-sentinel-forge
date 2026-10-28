@@ -14,3 +14,4 @@
 - Live endpoint paths live only in `src/lib/api/config.ts` and are placeholders until a backend spec exists — avoids scattered assumed URLs.
 - Job/pipeline status is rendered only from backend data; the UI never estimates progress or marks jobs complete.
 - Data hooks live in `src/lib/queries.ts` (React Query, client-side) because API config is stored in browser localStorage.
+- CVE list limits and rule grouping live in browser-safe `src/lib/soc-display.ts`; these presentation transforms preserve backend records and identifiers.
