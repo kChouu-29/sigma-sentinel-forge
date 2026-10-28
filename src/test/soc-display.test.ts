@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Job, SigmaRule } from "@/lib/api/types";
-import { groupRulesByCve, latestCveWorkflows } from "@/lib/soc-display";
+import { countRuleStates, groupRulesByCve, latestCveWorkflows } from "@/lib/soc-display";
 
 const job = (n: number, cveId = `CVE-2026-${1000 + n}`): Job => ({
   id: `workflow-${n}`, cveId, status: "completed",
@@ -12,6 +12,17 @@ const rule = (id: string, cveId: string): SigmaRule => ({
 });
 
 describe("SOC display rules", () => {
+  it("counts Generated, Validated and Reviewed using each rule's reported state", () => {
+    const rules: SigmaRule[] = [
+      rule("a", "CVE-2026-1000"), rule("b", "CVE-2026-1000"),
+      { ...rule("c", "CVE-2026-1000"), state: "validated" },
+      { ...rule("d", "CVE-2026-1000"), state: "reviewed" },
+      { ...rule("e", "CVE-2026-1000"), state: "deployed" },
+    ];
+    expect(countRuleStates(rules)).toEqual({ generated: 2, validated: 1, reviewed: 1 });
+    expect(countRuleStates([])).toEqual({ generated: 0, validated: 0, reviewed: 0 });
+    expect(rules[4].state).toBe("deployed");
+  });
   it("keeps at most 10 latest distinct CVEs and their newest workflow", () => {
     const jobs = Array.from({ length: 12 }, (_, n) => job(n));
     jobs.push(job(13, "CVE-2026-1000"));

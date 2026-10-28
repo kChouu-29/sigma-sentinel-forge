@@ -44,7 +44,7 @@ export function RulePanel({ rule }: { rule: SigmaRule }) {
           {rule.state !== "deployed" && (
             <p className="flex max-w-xs items-start gap-1.5 text-xs text-muted-foreground">
               <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
-              Not deployed. Generated rules require validation and analyst review before production use.
+               Not published. Generated rules require validation and analyst review before production use.
             </p>
           )}
         </div>

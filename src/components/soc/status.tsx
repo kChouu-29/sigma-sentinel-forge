@@ -1,6 +1,7 @@
 import { Ban, CheckCircle2, CircleDashed, CircleSlash, Clock, Loader2, XCircle, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { RuleState } from "@/lib/api";
+import { ruleStateLabel } from "@/lib/soc-display";
 
 const STATUS: Record<string, { cls: string; Icon: typeof Clock; spin?: boolean }> = {
   queued: { cls: "text-info border-info/30 bg-info/10", Icon: Clock },
@@ -40,17 +41,17 @@ const RULE_CLS: Record<RuleState, string> = {
 };
 
 export function RuleStateBadge({ state }: { state: RuleState }) {
-  return <span className={cn("inline-flex rounded border px-1.5 py-0.5 text-[11px] font-medium capitalize", RULE_CLS[state])}>{state}</span>;
+  return <span className={cn("inline-flex rounded border px-1.5 py-0.5 text-[11px] font-medium capitalize", RULE_CLS[state])}>{ruleStateLabel(state)}</span>;
 }
 
 /** Lifecycle track — makes explicit that generation ≠ production-ready. */
 export function RuleLifecycle({ state }: { state: RuleState }) {
   const idx = RULE_STATES.indexOf(state);
   return (
-    <ol className="flex items-center gap-1" aria-label={`Rule lifecycle: ${state}`}>
+    <ol className="flex flex-wrap items-center gap-1" aria-label={`Rule lifecycle: ${ruleStateLabel(state)}`}>
       {RULE_STATES.map((s, i) => (
         <li key={s} className="flex items-center gap-1">
-          <span className={cn("rounded px-2 py-0.5 text-[11px] font-medium capitalize", i <= idx ? RULE_CLS[s] + " border" : "border border-dashed text-muted-foreground/60")}>{s}</span>
+          <span className={cn("rounded px-2 py-0.5 text-[11px] font-medium capitalize", i <= idx ? RULE_CLS[s] + " border" : "border border-dashed text-muted-foreground/60")}>{ruleStateLabel(s)}</span>
           {i < RULE_STATES.length - 1 && <span className={cn("h-px w-3", i < idx ? "bg-primary" : "bg-border")} />}
         </li>
       ))}

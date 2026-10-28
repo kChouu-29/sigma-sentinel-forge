@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { AlertOctagon, CheckCircle2, Cpu, Database, Plus, Search } from "lucide-react";
-import { useOverview } from "@/lib/queries";
+import { AlertOctagon, CheckCircle2, Cpu, Database, FileCode2, Plus, Search, ShieldCheck, GitPullRequest } from "lucide-react";
+import { useOverview, useRules } from "@/lib/queries";
 import { PageHeader, StatCard, ErrorState, EmptyState, MockBadge, Mono } from "@/components/soc/primitives";
 import { JobsTable } from "@/components/soc/JobsTable";
-import { RuleStateBadge, StatusIcon } from "@/components/soc/status";
+import { RuleStateBadge } from "@/components/soc/status";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { relTime } from "@/lib/format";
-import { MAX_ROWS, latestCveWorkflows } from "@/lib/soc-display";
+import { MAX_ROWS, latestCveWorkflows, countRuleStates } from "@/lib/soc-display";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,9 +27,10 @@ export const Route = createFileRoute("/")({
 
 function Overview() {
   const { data, isLoading, error, refetch } = useOverview();
+  const rules = useRules();
   const [q, setQ] = useState("");
   const jobs = useMemo(() => data ? latestCveWorkflows(data.recentJobs).filter((j) => (j.cveId + j.id + (j.stage ?? "") + j.status).toLowerCase().includes(q.toLowerCase())) : undefined, [data, q]);
-  const total = data ? data.stageSummary.reduce((a, b) => a + b.count, 0) : 0;
+  const ruleCounts = useMemo(() => countRuleStates(rules.data ?? []), [rules.data]);
 
   return (
     <>
@@ -44,33 +45,22 @@ function Overview() {
             {isLoading || !data ? Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-[92px] rounded-lg" />) : <>
               <StatCard label="CVEs processed" value={data.totals.processed} icon={<Database className="h-4 w-4" />} />
               <StatCard label="Running jobs" value={data.totals.running} icon={<Cpu className="h-4 w-4" />} tone="warning" />
-              <StatCard label="Rules generated" value={data.totals.rulesGenerated} icon={<CheckCircle2 className="h-4 w-4" />} tone="success" hint="Generated ≠ deployed" />
+              <StatCard label="Rules generated" value={data.totals.rulesGenerated} icon={<CheckCircle2 className="h-4 w-4" />} tone="success" hint="Generated ≠ published" />
               <StatCard label="Failed jobs" value={data.totals.failed} icon={<AlertOctagon className="h-4 w-4" />} tone="danger" />
             </>}
           </div>
 
-          <section className="panel p-4" aria-label="Pipeline status summary">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-semibold">Pipeline status</h2>
-              <span className="font-mono text-xs text-muted-foreground">{total} jobs</span>
-            </div>
-            {data ? (
-              <>
-                <div className="flex h-2 overflow-hidden rounded-full bg-muted">
-                  {data.stageSummary.map((s) => s.count > 0 && (
-                    <div key={s.label} title={`${s.label}: ${s.count}`} style={{ width: `${(s.count / total) * 100}%` }}
-                      className={{ queued: "bg-info", running: "bg-warning", completed: "bg-success", failed: "bg-danger" }[s.status as string] ?? "bg-muted-foreground"} />
-                  ))}
-                </div>
-                <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2">
-                  {data.stageSummary.map((s) => (
-                    <Link key={s.label} to="/history" search={{ status: s.status }} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground">
-                      <StatusIcon status={s.status} className="h-3.5 w-3.5" /><span className="capitalize">{s.label}</span><span className="font-mono text-foreground">{s.count}</span>
-                    </Link>
-                  ))}
-                </div>
-              </>
-            ) : <Skeleton className="h-10" />}
+          <section aria-label="Rule status summary" className="space-y-3">
+            <h2 className="text-sm font-semibold">Rule status</h2>
+            {rules.error ? <ErrorState error={rules.error} onRetry={() => rules.refetch()} /> : (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {rules.isLoading || !rules.data ? Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-[92px] rounded-lg" />) : <>
+                  <StatCard label="Generated" value={ruleCounts.generated} icon={<FileCode2 className="h-4 w-4" />} />
+                  <StatCard label="Validated" value={ruleCounts.validated} icon={<ShieldCheck className="h-4 w-4" />} tone="success" />
+                  <StatCard label="Reviewed" value={ruleCounts.reviewed} icon={<GitPullRequest className="h-4 w-4" />} tone="warning" />
+                </>}
+              </div>
+            )}
           </section>
 
           <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
