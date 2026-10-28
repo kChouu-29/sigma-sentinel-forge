@@ -8,6 +8,7 @@ import { validateCve } from "@/lib/format";
 import { useJobs } from "@/lib/queries";
 import { PageHeader, ErrorState, EmptyState, MockBadge } from "@/components/soc/primitives";
 import { JobsTable } from "@/components/soc/JobsTable";
+import { MAX_ROWS } from "@/lib/soc-display";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -88,7 +89,7 @@ function Pipeline() {
           <h2 className="text-sm font-semibold">Latest submissions</h2>
           <Link to="/history" className="text-xs text-primary hover:underline">Full history</Link>
         </div>
-        {recent.error ? <div className="p-3"><ErrorState error={recent.error} onRetry={() => recent.refetch()} /></div> : <JobsTable jobs={recent.data?.slice(0, 8)} loading={recent.isLoading} />}
+        {recent.error ? <div className="p-3"><ErrorState error={recent.error} onRetry={() => recent.refetch()} /></div> : <JobsTable jobs={recent.data?.slice(0, MAX_ROWS)} loading={recent.isLoading} />}
       </section>
     </>
   );

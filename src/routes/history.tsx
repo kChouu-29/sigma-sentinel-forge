@@ -35,7 +35,7 @@ export const Route = createFileRoute("/history")({
   component: HistoryPage,
 });
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 
 function HistoryPage() {
   const search = Route.useSearch();

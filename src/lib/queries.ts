@@ -37,7 +37,7 @@ export function useOverview() {
 }
 export function useJobs(activeOnly?: boolean) {
   const { mode, pollIntervalMs } = useApiConfig();
-  return useQuery({ queryKey: qk.jobs(mode, activeOnly), queryFn: () => api().listJobs({ activeOnly, limit: 25 }), refetchInterval: pollIntervalMs });
+  return useQuery({ queryKey: qk.jobs(mode, activeOnly), queryFn: () => api().listJobs({ activeOnly, limit: 10 }), refetchInterval: pollIntervalMs });
 }
 export function useJob(id: string) {
   const { mode, pollIntervalMs } = useApiConfig();

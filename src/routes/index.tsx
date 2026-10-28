@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { relTime } from "@/lib/format";
-import { latestCveWorkflows } from "@/lib/soc-display";
+import { MAX_ROWS, latestCveWorkflows } from "@/lib/soc-display";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -93,7 +93,7 @@ function Overview() {
               </div>
               <ul className="divide-y divide-border/60">
                 {isLoading && Array.from({ length: 5 }).map((_, i) => <li key={i} className="p-3"><Skeleton className="h-9" /></li>)}
-                {data?.recentRules.map((r) => (
+                {data?.recentRules.slice(0, MAX_ROWS).map((r) => (
                   <li key={r.id}>
                     <Link to="/rules/$ruleId" params={{ ruleId: r.id }} className="block p-3 hover:bg-accent/40">
                       <div className="flex items-center justify-between gap-2">
