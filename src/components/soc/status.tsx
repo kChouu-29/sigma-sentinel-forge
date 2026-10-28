@@ -58,15 +58,3 @@ export function RuleLifecycle({ state }: { state: RuleState }) {
   );
 }
 
-export function ProgressBar({ value, status }: { value?: number | null; status: string }) {
-  if (value == null) return <span className="text-xs text-muted-foreground">n/a</span>;
-  const bar = status === "failed" ? "bg-danger" : status === "completed" ? "bg-success" : status === "running" ? "bg-warning" : "bg-muted-foreground";
-  return (
-    <div className="flex items-center gap-2">
-      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={value} aria-valuemin={0} aria-valuemax={100}>
-        <div className={cn("h-full rounded-full transition-all", bar)} style={{ width: `${value}%` }} />
-      </div>
-      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{value}%</span>
-    </div>
-  );
-}
